@@ -1,3 +1,2 @@
 # mb - Maybe build?
-
-Some kind of bmake-based build system.
+A bmake-based build system of questionable quality.
