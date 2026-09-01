@@ -1,9 +1,10 @@
 #
 # Directories
+# Set these explicitly, they can be overriden from mbconfig
 #
-OBJDIR?= ${PROJDIR}/build
-INCDIR?= ${PROJDIR}/include
-MBDIR?= ${PROJDIR}/mb
+OBJDIR:= ${PROJDIR}/build
+INCDIR:= ${PROJDIR}/include
+MBDIR:= ${.PARSEDIR}/mb
 
 .if exists(${PROJDIR}/mbconfig.mk)
 .  include "${PROJDIR}/mbconfig.mk"
