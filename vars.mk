@@ -4,7 +4,7 @@
 #
 OBJDIR:= ${PROJDIR}/build
 INCDIR:= ${PROJDIR}/include
-MBDIR:= ${.PARSEDIR}/mb
+MBDIR:= ${.PARSEDIR}
 
 .if exists(${PROJDIR}/mbconfig.mk)
 .  include "${PROJDIR}/mbconfig.mk"
