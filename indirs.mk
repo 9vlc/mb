@@ -12,13 +12,15 @@
 #   SUBOBJDIR.name - Path to object subdirectory
 #
 
-.for _subdir in ${SUBDIRS}
-SUBDIR:= ${.INCLUDEDFROMDIR}/${_subdir}
-SUBOBJDIR:= ${OBJDIR}/${_subdir}
-SUBDIR.${_subdir}:= ${SUBDIR}
-SUBOBJDIR.${_subdir}:= ${SUBOBJDIR}
+_i.indirs:= ${.INCLUDEDFROMDIR}
 
-.  include "${.INCLUDEDFROMDIR}/${_subdir}/sub.mk"
+.for _subdir.indirs in ${SUBDIRS}
+SUBDIR:= ${_i.indirs}/${_subdir.indirs}
+SUBOBJDIR:= ${OBJDIR}/${_subdir.indirs}
+SUBDIR.${_subdir.indirs}:= ${SUBDIR}
+SUBOBJDIR.${_subdir.indirs}:= ${SUBOBJDIR}
+
+.  include "${_i.indirs}/${_subdir.indirs}/sub.mk"
 .endfor
 
 SUBDIRS:=

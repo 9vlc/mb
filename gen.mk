@@ -18,7 +18,7 @@
 #   located in OBJDIR instead of SUBOBJDIR
 #
 
-_i:= ${.INCLUDEDFROMDIR}
+_i.gen:= ${.INCLUDEDFROMDIR}
 OBJS:=
 HOSTOBJS:=
 
@@ -26,55 +26,55 @@ HOSTOBJS:=
 HOSTBUILD:= 0
 .endif
 
-.for _sf in ${SRCS}
-_fl:= ${_sf:C/^(.).*/\1/}
+.for _sf.gen in ${SRCS}
+_fl.gen:= ${_sf.gen:C/^(.).*/\1/}
 
 # Different paths depending on if name starts with @
-.  if ${_fl} == "@"
-_rsf:= ${SUBDIR}/${_sf:C/^.//}
-_o:= ${OBJDIR}/${_sf:R:C/^.//}.o
+.  if ${_fl.gen} == "@"
+_rsf.gen:= ${SUBDIR}/${_sf.gen:C/^.//}
+_o.gen:= ${OBJDIR}/${_sf.gen:R:C/^.//}.o
 .  else
-_rsf:= ${SUBDIR}/${_sf}
-_o:= ${SUBOBJDIR}/${_sf:R}.o
+_rsf.gen:= ${SUBDIR}/${_sf.gen}
+_o.gen:= ${SUBOBJDIR}/${_sf.gen:R}.o
 .  endif
 
 # The target and a following ifhell
-${_o}: ${_rsf}
+${_o.gen}: ${_rsf.gen}
 .  if ${HOSTBUILD} == 1
-.    if ${_rsf:E} == "c"
+.    if ${_rsf.gen:E} == "c"
 	${HOSTCC} ${HOSTCFLAGS} -c -o $@ $>
-.    elif ${_rsf:E} == "s"
+.    elif ${_rsf.gen:E} == "s"
 	${HOSTAS} ${HOSTASFLAGS} -c -o $@ $>
-.    elif ${_rsf:E} == "S"
+.    elif ${_rsf.gen:E} == "S"
 	${HOSTCC} ${HOSTCASFLAGS} -c -o $@ $>
 .    else
-.      error "Unknown source file extension: ${_rsf:E}"
+.      error "Unknown source file extension: ${_rsf.gen:E}"
 .    endif
 .  else
-.    if ${_rsf:E} == "c"
+.    if ${_rsf.gen:E} == "c"
 	${CC} ${CFLAGS} -c -o $@ $>
-.    elif ${_rsf:E} == "s"
+.    elif ${_rsf.gen:E} == "s"
 	${AS} ${ASFLAGS} -c -o $@ $>
-.    elif ${_rsf:E} == "S"
+.    elif ${_rsf.gen:E} == "S"
 	${CC} ${CASFLAGS} -c -o $@ $>
 .    else
-.      error "Unknown source file extension: ${_rsf:E}"
+.      error "Unknown source file extension: ${_rsf.gen:E}"
 .    endif
 .  endif
 
 .  if ${HOSTBUILD} == 1
-HOSTOBJS:= ${HOSTOBJS} ${_o}
+HOSTOBJS:= ${HOSTOBJS} ${_o.gen}
 .  else
-OBJS:= ${OBJS} ${_o}
+OBJS:= ${OBJS} ${_o.gen}
 .  endif
 .endfor
 
 .if ${HOSTBUILD} == 1
 HOSTOBJS_ALL:= ${HOSTOBJS_ALL} ${HOSTOBJS}
-HOSTOBJS.${_i:T}:= ${HOSTOBJS}
+HOSTOBJS.${_i.gen:T}:= ${HOSTOBJS}
 .else
 OBJS_ALL:= ${OBJS_ALL} ${OBJS}
-OBJS.${_i:T}:= ${OBJS}
+OBJS.${_i.gen:T}:= ${OBJS}
 .endif
 
 SRCS:=

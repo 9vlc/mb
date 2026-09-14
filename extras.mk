@@ -13,21 +13,21 @@
 #   the root of OBJDIR and not SUBOBJDIR
 #
 
-_i:= ${.INCLUDEDFROMDIR}
-_es:= ${EXTRAS}
+_i.extras:= ${.INCLUDEDFROMDIR}
+_es.extras:= ${EXTRAS}
 EXTRAS:=
 
-.for _ex in ${_es}
-_p:= ${_ex:C/^(.).*/\1/}
+.for _ex.extras in ${_es.extras}
+_p.extras:= ${_ex.extras:C/^(.).*/\1/}
 
-.  if ${_p} == "@"
-EXTRAS:= ${EXTRAS} ${OBJDIR}/${_ex:C/^.//}
+.  if ${_p.extras} == "@"
+EXTRAS:= ${EXTRAS} ${OBJDIR}/${_ex.extras:C/^.//}
 .  else
-EXTRAS:= ${EXTRAS} ${OBJDIR}/${_i:T}/${_ex}
+EXTRAS:= ${EXTRAS} ${OBJDIR}/${_i.extras:T}/${_ex.extras}
 .  endif
 
 .endfor
 
 EXTRAS_ALL:= ${EXTRAS_ALL} ${EXTRAS}
-EXTRAS.${_i:T}:= ${EXTRAS}
+EXTRAS.${_i.extras:T}:= ${EXTRAS}
 EXTRAS:=
