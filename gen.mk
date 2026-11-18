@@ -27,10 +27,10 @@ HOSTBUILD:= 0
 .endif
 
 .for _sf.gen in ${SRCS}
-_fl.gen:= ${_sf.gen:C/^(.).*/\1/}
+_fn.gen:= ${_sf.gen:C/^@//}
 
 # Different paths depending on if name starts with @
-.  if ${_fl.gen} == "@"
+.  if ${_sf.gen:C/^(.).*/\1/} == "@"
 _rsf.gen:= ${SUBDIR}/${_sf.gen:C/^.//}
 _o.gen:= ${OBJDIR}/${_sf.gen:R:C/^.//}.o
 .  else
@@ -38,25 +38,33 @@ _rsf.gen:= ${SUBDIR}/${_sf.gen}
 _o.gen:= ${SUBOBJDIR}/${_sf.gen:R}.o
 .  endif
 
+# Flag appends
+.  for _ftype in C AS ASC HOSTC HOSTAS HOSTASC
+.    if defined(${_ftype}FLAGS.${_fn.gen})
+_${_ftype}FLAGS.${_o.gen}:= ${${_ftype}FLAGS.${_fn.gen}}
+.      undef ${_ftype}FLAGS.${_fn.gen}
+.    endif
+.  endfor
+
 # The target and a following ifhell
 ${_o.gen}: ${_rsf.gen}
 .  if ${HOSTBUILD} == 1
 .    if ${_rsf.gen:E} == "c"
-	${HOSTCC} ${HOSTCFLAGS} -c -o $@ $>
+	${HOSTCC} ${HOSTCFLAGS} ${_HOSTCFLAGS.${.TARGET}:U} -c -o $@ $>
 .    elif ${_rsf.gen:E} == "s"
-	${HOSTAS} ${HOSTASFLAGS} -c -o $@ $>
+	${HOSTAS} ${HOSTASFLAGS} ${_HOSTASFLAGS.${.TARGET}:U} -c -o $@ $>
 .    elif ${_rsf.gen:E} == "S"
-	${HOSTCC} ${HOSTCASFLAGS} -c -o $@ $>
+	${HOSTCC} ${HOSTCASFLAGS} ${_HOSTCASFLAGS.${.TARGET}:U} -c -o $@ $>
 .    else
 .      error "Unknown source file extension: ${_rsf.gen:E}"
 .    endif
 .  else
 .    if ${_rsf.gen:E} == "c"
-	${CC} ${CFLAGS} -c -o $@ $>
+	${CC} ${CFLAGS} ${_CFLAGS.${.TARGET}:U} -c -o $@ $>
 .    elif ${_rsf.gen:E} == "s"
-	${AS} ${ASFLAGS} -c -o $@ $>
+	${AS} ${ASFLAGS} ${_ASFLAGS.${.TARGET}:U} -c -o $@ $>
 .    elif ${_rsf.gen:E} == "S"
-	${CC} ${CASFLAGS} -c -o $@ $>
+	${CC} ${CASFLAGS} ${_CASFLAGS.${.TARGET}:U} -c -o $@ $>
 .    else
 .      error "Unknown source file extension: ${_rsf.gen:E}"
 .    endif
